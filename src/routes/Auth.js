@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { authService } from '../firebase';
 import {
+  getAuth,
+  signInWithPopup,
+  GithubAuthProvider,
+  GoogleAuthProvider,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from 'firebase/auth';
@@ -10,6 +14,7 @@ function Auth() {
   const [password, setPassword] = useState('');
   const [newAccount, setNewAccount] = useState(false);
   const [error, setError] = useState('');
+  const auth = getAuth(); // auth 인스턴스
 
   const onChange = event => {
     const {
@@ -56,6 +61,21 @@ function Auth() {
     setNewAccount(prev => !prev);
   };
 
+  const onSocialClick = async event => {
+    const {
+      target: { name },
+    } = event;
+    let provider;
+
+    if (name === 'google') {
+      provider = new GoogleAuthProvider();
+    } else if (name === 'github') {
+      provider = new GithubAuthProvider();
+    }
+    const popUpData = await signInWithPopup(auth, provider);
+    console.log(popUpData);
+  };
+
   return (
     <div>
       <form onSubmit={onSubmit}>
@@ -85,8 +105,12 @@ function Auth() {
         {newAccount ? 'Sign In' : 'Create Account'}
       </span>
       <div>
-        <button>Google로 계속하기</button>
-        <button>GitHub로 계속하기</button>
+        <button onClick={onSocialClick} name="google">
+          Google로 계속하기
+        </button>
+        <button onClick={onSocialClick} name="github">
+          GitHub로 계속하기
+        </button>
       </div>
     </div>
   );
