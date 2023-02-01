@@ -8,12 +8,14 @@ function App() {
   const [init, setInit] = useState(false);
   // 로그인 상태 여부
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userObj, setUserObj] = useState(null);
 
   useEffect(() => {
     // 로그인 상태 확인
     onAuthStateChanged(authService, user => {
       if (user) {
         setIsLoggedIn(true);
+        setUserObj(user);
       } else {
         setIsLoggedIn(false);
       }
@@ -21,7 +23,15 @@ function App() {
     });
   }, []);
 
-  return <div>{init ? <Router isLoggedIn={isLoggedIn} /> : 'Loading...'}</div>;
+  return (
+    <div>
+      {init ? (
+        <Router isLoggedIn={isLoggedIn} userObj={userObj} />
+      ) : (
+        'Loading...'
+      )}
+    </div>
+  );
 }
 
 export default App;
