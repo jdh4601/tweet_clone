@@ -8,13 +8,13 @@ import {
   query,
   orderBy,
 } from 'firebase/firestore';
-import { db } from '../firebase';
+import { db, storage } from '../firebase';
 import Tweet from '../components/Tweet';
 
 function Home({ userObj }) {
   const [tweet, setTweet] = useState('');
   const [tweets, setTweets] = useState([]);
-
+  const [attachedFile, setAttachedFile] = useState(null);
   // ✅ Add data
   const onSubmit = async event => {
     event.preventDefault();
@@ -66,6 +66,26 @@ function Home({ userObj }) {
     onSubmit();
   };
 
+  const onFileChange = event => {
+    // File name reference
+    const fileName = event.target.files[0];
+    // Root reference
+    // const storageRef = ref(storage);
+    // // Image reference
+    // const imagesRef = ref(storageRef, `image/${fileName}`);
+    // // Cloud storage reference
+    // const gsRef = ref(storage, 'gs://tweeter-app-70938.appspot.com/');
+    const reader = new FileReader();
+    reader.onloadend = event => {
+      setAttachedFile(event.currentTarget.result);
+    };
+    reader.readAsDataURL(fileName);
+  };
+
+  const clearPhoto = event => {
+    setAttachedFile(null);
+  };
+
   return (
     <>
       <div>
@@ -78,6 +98,13 @@ function Home({ userObj }) {
             maxLength={50}
           />
           <input type="submit" value="Tweet" onClick={onClick} />
+          <input type="file" accept="image/*" onChange={onFileChange} />
+          {attachedFile && (
+            <div>
+              <img width="70px" height="150px" src={attachedFile} />
+              <button onClick={clearPhoto}>clear</button>
+            </div>
+          )}
         </form>
         <div>
           {tweets.map(tweet => (
