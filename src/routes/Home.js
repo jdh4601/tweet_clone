@@ -8,8 +8,10 @@ import {
   query,
   orderBy,
 } from 'firebase/firestore';
+import { ref, uploadString } from 'firebase/storage';
 import { db, storage } from '../firebase';
 import Tweet from '../components/Tweet';
+import { v4 as uuidv4 } from 'uuid';
 
 function Home({ userObj }) {
   const [tweet, setTweet] = useState('');
@@ -18,6 +20,12 @@ function Home({ userObj }) {
   // ✅ Add data
   const onSubmit = async event => {
     event.preventDefault();
+    // const storageRef = ref(storage);
+    const fileRef = ref(storage, `${userObj.uid}/${uuidv4()}`);
+    console.log(fileRef);
+    const response = await uploadString(fileRef, attachedFile, 'data_url');
+    console.log(response);
+
     try {
       const docRef = await addDoc(collection(db, 'users'), {
         text: tweet,
@@ -67,13 +75,8 @@ function Home({ userObj }) {
   };
 
   const onFileChange = event => {
-    // File name reference
     const fileName = event.target.files[0];
-    // Root reference
     // const storageRef = ref(storage);
-    // // Image reference
-    // const imagesRef = ref(storageRef, `image/${fileName}`);
-    // // Cloud storage reference
     // const gsRef = ref(storage, 'gs://tweeter-app-70938.appspot.com/');
     const reader = new FileReader();
     reader.onloadend = event => {
