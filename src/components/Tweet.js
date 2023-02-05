@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { db } from '../firebase';
+import { db, storage } from '../firebase';
 import { doc, deleteDoc, updateDoc } from 'firebase/firestore';
+import { deleteObject, ref } from 'firebase/storage';
 
 function Tweet({ tweetObj, isOwner }) {
   const [editing, setEditing] = useState(false);
@@ -8,8 +9,18 @@ function Tweet({ tweetObj, isOwner }) {
 
   const onDeleteClick = async () => {
     const ok = window.confirm('Are you sure you want to delete?');
+    const attachmentRef = ref(storage, tweetObj.attachmentURL);
+    // 첨부 파일 참조: gs://tweeter-app-70938.appspot.com/
     if (ok) {
       await deleteDoc(doc(db, `users/${tweetObj.id}`));
+      if (tweetObj.attachmentUrl !== '') {
+        try {
+          // 첨부파일을 firestorage에서 삭제
+          await deleteObject(attachmentRef);
+        } catch (err) {
+          window.alert('파일을 삭제하는데 실패했습니다');
+        }
+      }
     }
   };
 
@@ -29,7 +40,6 @@ function Tweet({ tweetObj, isOwner }) {
       text: newTweet,
     });
     setEditing(false);
-    console.log(`Updated text is ${newTweet}`);
   };
 
   return (
@@ -49,6 +59,9 @@ function Tweet({ tweetObj, isOwner }) {
       ) : (
         <div key={tweetObj.id}>
           <h4>{tweetObj.text}</h4>
+          {tweetObj.attachmentUrl && (
+            <img src={tweetObj.attachmentUrl} width="80px" height="130px" />
+          )}
           {isOwner && (
             <div>
               <button onClick={onDeleteClick}>Delete</button>
