@@ -8,28 +8,55 @@ import {
   query,
   orderBy,
 } from 'firebase/firestore';
+import { ref, uploadString, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../firebase';
 import Tweet from '../components/Tweet';
+import { v4 as uuidv4 } from 'uuid';
 
 function Home({ userObj }) {
   const [tweet, setTweet] = useState('');
   const [tweets, setTweets] = useState([]);
-  const [attachedFile, setAttachedFile] = useState(null);
+  const [attachedFile, setAttachedFile] = useState('');
+
   // ✅ Add data
   const onSubmit = async event => {
     event.preventDefault();
+    let attachmentUrl = '';
+    // 첨부 파일 없을 경우?
+    if (attachedFile !== '') {
+      const attachmentRef = ref(storage, `${userObj.uid}/${uuidv4()}`);
+      const response = await uploadString(
+        attachmentRef,
+        attachedFile,
+        'data_url'
+      );
+      attachmentUrl = await getDownloadURL(response.ref);
+    }
+
+    const tweetObj = {
+      text: tweet,
+      createdAt: serverTimestamp(),
+      creatorId: userObj.uid,
+      attachmentUrl,
+    };
+
+    await getDocs(collection(db, 'users'), tweetObj);
+
     try {
       const docRef = await addDoc(collection(db, 'users'), {
         text: tweet,
         createdAt: serverTimestamp(),
         creatorId: userObj.uid,
         email: userObj.email,
+        attachmentUrl,
       });
       console.log('Document written with ID: ', docRef);
     } catch (err) {
       console.error('Error adding document: ', err);
     }
-    setTweet('');
+
+    setTweet(''); // form 비우기
+    setAttachedFile(''); // file img src 비우기
   };
 
   // ✅ Read data
@@ -43,6 +70,12 @@ function Home({ userObj }) {
       setTweets(prev => [tweetObj, ...prev]);
     });
   };
+
+  // // ✅ Delete file
+  // const deleteFile = async () => {
+  //   const refFromUrl = refFromURL(attachmentUrl);
+  //   const deleteObj = await deleteObject(refFromUrl);
+  // };
 
   useEffect(() => {
     getTweets();
@@ -67,14 +100,7 @@ function Home({ userObj }) {
   };
 
   const onFileChange = event => {
-    // File name reference
     const fileName = event.target.files[0];
-    // Root reference
-    // const storageRef = ref(storage);
-    // // Image reference
-    // const imagesRef = ref(storageRef, `image/${fileName}`);
-    // // Cloud storage reference
-    // const gsRef = ref(storage, 'gs://tweeter-app-70938.appspot.com/');
     const reader = new FileReader();
     reader.onloadend = event => {
       setAttachedFile(event.currentTarget.result);
@@ -82,8 +108,8 @@ function Home({ userObj }) {
     reader.readAsDataURL(fileName);
   };
 
-  const clearPhoto = event => {
-    setAttachedFile(null);
+  const onClearAttachment = event => {
+    setAttachedFile('');
   };
 
   return (
@@ -102,7 +128,7 @@ function Home({ userObj }) {
           {attachedFile && (
             <div>
               <img width="70px" height="150px" src={attachedFile} />
-              <button onClick={clearPhoto}>clear</button>
+              <button onClick={onClearAttachment}>clear</button>
             </div>
           )}
         </form>
