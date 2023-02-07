@@ -16,7 +16,6 @@ function Home({ userObj }) {
         id: doc.id,
         ...doc.data(),
       }));
-      console.log(tweetArr);
       setTweets(tweetArr);
     });
   }, []);

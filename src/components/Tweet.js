@@ -6,16 +6,13 @@ import { deleteObject, ref } from 'firebase/storage';
 function Tweet({ tweetObj, isOwner }) {
   const [editing, setEditing] = useState(false);
   const [newTweet, setNewTweet] = useState(tweetObj.text);
-
   const onDeleteClick = async () => {
     const ok = window.confirm('Are you sure you want to delete?');
     const attachmentRef = ref(storage, tweetObj.attachmentURL);
-    // 첨부 파일 참조: gs://tweeter-app-70938.appspot.com/
     if (ok) {
       await deleteDoc(doc(db, `users/${tweetObj.id}`));
       if (tweetObj.attachmentUrl !== '') {
         try {
-          // 첨부파일을 firestorage에서 삭제
           await deleteObject(attachmentRef);
         } catch (err) {
           window.alert('파일을 삭제하는데 실패했습니다');
