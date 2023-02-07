@@ -6,7 +6,6 @@ import { deleteObject, ref } from 'firebase/storage';
 function Tweet({ tweetObj, isOwner }) {
   const [editing, setEditing] = useState(false);
   const [newTweet, setNewTweet] = useState(tweetObj.text);
-
   const onDeleteClick = async () => {
     const ok = window.confirm('Are you sure you want to delete?');
     const attachmentRef = ref(storage, tweetObj.attachmentURL);

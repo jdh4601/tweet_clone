@@ -23,10 +23,8 @@ function Auth() {
 
     if (name === 'email') {
       setEmail(value);
-      console.log(value);
     } else if (name === 'password') {
       setPassword(value);
-      console.log(value);
     }
   };
 
@@ -34,27 +32,32 @@ function Auth() {
     e.preventDefault();
     try {
       if (newAccount) {
-        // create new account, signup
+        // create new account
         const data = await createUserWithEmailAndPassword(
           authService,
           email,
           password
         );
+        console.log('Congratulation!!!');
+        console.log(`Created ID is ${data.user.email}`);
+        console.log(`user id is ${data.user.uid}`);
         console.log(data);
       } else {
-        // signin
+        // sign in
         const data = await signInWithEmailAndPassword(
           authService,
           email,
           password
         );
-        console.log('SIGN IN\nWelcome!');
-        const emailData = data.user.email;
-        console.log(emailData);
+        console.log('SIGN IN\nWelcome!!!');
+        console.log(data.user.email);
+        console.log(data);
       }
     } catch (error) {
       setError(error.message);
     }
+    setEmail('');
+    setPassword('');
   };
 
   const toggleAccount = () => {
