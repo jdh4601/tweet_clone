@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getAuth, updateProfile } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
-import { db } from '../firebase';
+import { db, authService } from '../firebase';
 import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
 
 function Profile({ userObj, refreshUser }) {
@@ -14,6 +14,7 @@ function Profile({ userObj, refreshUser }) {
     navigate('/');
   };
 
+  // db에서 내 트윗 가져오기 -> created된 순서로 오름차순 정렬
   const getMyTweets = async () => {
     const q = query(
       collection(db, 'users'),
@@ -21,7 +22,6 @@ function Profile({ userObj, refreshUser }) {
       orderBy('createdAt', 'asc')
     );
     const querySnapshot = await getDocs(q);
-    // DB 필터링하기
     querySnapshot.forEach(doc => console.log(doc.id, '=>', doc.data()));
   };
 
@@ -29,22 +29,20 @@ function Profile({ userObj, refreshUser }) {
     getMyTweets();
   }, []);
 
+  // ✅ profile update
   const onSubmit = async e => {
     e.preventDefault();
-    const displayName = userObj.displayName;
-    const email = userObj.email;
-    const photoUrl = userObj.photoURL;
-    const emailVerified = userObj.emailVerified;
-    // 가져온 이름과 입력한 이름이 다르면?? -> 다시 update
-    if (displayName !== newDisplayName) {
-      updateProfile(auth.currentUser, {
-        displayName: displayName,
-        email: email,
-        photoUrl: photoUrl,
-        emailVerified: emailVerified,
+    // 가져온 이름과 현재 입력한 이름이 다르면?? -> 현재 입력한 값으로 다시 profile update!!
+    if (userObj.displayName !== newDisplayName) {
+      window.alert(
+        `"${userObj.displayName}" 님의 프로필 이름이 "${newDisplayName}" 으로 변경되었습니다`
+      );
+      await updateProfile(authService.currentUser, {
+        displayName: newDisplayName,
       });
-      refreshUser();
+      refreshUser(); // user profile 업데이트
     }
+    setNewDisplayName('');
   };
 
   const onChange = e => {
@@ -56,7 +54,7 @@ function Profile({ userObj, refreshUser }) {
       <form onSubmit={onSubmit}>
         <input
           type="text"
-          placeholder="What display"
+          placeholder="이름을 입력하세요"
           value={newDisplayName}
           onChange={onChange}
         />
