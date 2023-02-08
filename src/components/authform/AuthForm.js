@@ -1,20 +1,18 @@
 import React, { useState } from 'react';
-import { authService } from '../firebase';
 import {
-  getAuth,
-  signInWithPopup,
-  GithubAuthProvider,
-  GoogleAuthProvider,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from 'firebase/auth';
+import { authService } from '../../firebase';
+import './AuthForm.css';
+import undraw1 from '../../assets/undraw_login_re_4vu2 1.png';
+import undraw2 from '../../assets/undraw_login_re_4vu2 1 (1).png';
 
-function Auth() {
+function AuthForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [newAccount, setNewAccount] = useState(false);
   const [error, setError] = useState('');
-  const auth = getAuth(); // auth 인스턴스
 
   const onChange = event => {
     const {
@@ -55,6 +53,7 @@ function Auth() {
       }
     } catch (error) {
       setError(error.message);
+      console.log(error);
     }
     setEmail('');
     setPassword('');
@@ -64,25 +63,17 @@ function Auth() {
     setNewAccount(prev => !prev);
   };
 
-  const onSocialClick = async event => {
-    const {
-      target: { name },
-    } = event;
-    let provider;
-
-    if (name === 'google') {
-      provider = new GoogleAuthProvider();
-    } else if (name === 'github') {
-      provider = new GithubAuthProvider();
-    }
-    const popUpData = await signInWithPopup(auth, provider);
-    console.log(popUpData);
-  };
-
   return (
-    <div>
-      <form onSubmit={onSubmit}>
+    <>
+      <form className="login-form" onSubmit={onSubmit}>
+        {newAccount ? (
+          <img className="login-img" src={undraw2} />
+        ) : (
+          <img className="login-img" src={undraw1} />
+        )}
+        <h2 className="auth-title">{newAccount ? 'Sign Up' : 'Login'}</h2>
         <input
+          className="login-input"
           name="email"
           type="text"
           placeholder="Email"
@@ -91,6 +82,7 @@ function Auth() {
           required
         />
         <input
+          className="login-input"
           name="password"
           type="password"
           placeholder="Password"
@@ -98,25 +90,19 @@ function Auth() {
           onChange={onChange}
           required
         />
+        {error && <span className="login-error-message">{error}</span>}
+
+        <span className="signin-span" onClick={toggleAccount}>
+          {newAccount ? 'Sign In' : 'Create Account'}
+        </span>
         <input
+          className="login-btn"
           type="submit"
           value={newAccount ? 'Create new account' : 'Login'}
         />
       </form>
-      <span>{error}</span>
-      <span onClick={toggleAccount}>
-        {newAccount ? 'Sign In' : 'Create Account'}
-      </span>
-      <div>
-        <button onClick={onSocialClick} name="google">
-          Google로 계속하기
-        </button>
-        <button onClick={onSocialClick} name="github">
-          GitHub로 계속하기
-        </button>
-      </div>
-    </div>
+    </>
   );
 }
 
-export default Auth;
+export default AuthForm;

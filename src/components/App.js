@@ -2,11 +2,14 @@ import React, { useState, useEffect } from 'react';
 import Router from './Router';
 import { authService } from '../firebase';
 import { onAuthStateChanged, updateProfile } from 'firebase/auth';
+import ClipLoader from 'react-spinners/ClipLoader';
+import '../App.css';
 
 function App() {
   const [init, setInit] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userObj, setUserObj] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // 로그인 상태 확인
@@ -34,6 +37,7 @@ function App() {
         setIsLoggedIn(false);
         setUserObj(null);
       }
+      setLoading(false);
       setInit(true);
     });
   }, []);
@@ -45,7 +49,7 @@ function App() {
   };
 
   return (
-    <>
+    <div className="App">
       {init ? (
         <Router
           isLoggedIn={isLoggedIn}
@@ -53,9 +57,11 @@ function App() {
           userObj={userObj}
         />
       ) : (
-        'Loading...'
+        <div className="loader-container">
+          <ClipLoader size={120} color={'#0B6EFE'} />
+        </div>
       )}
-    </>
+    </div>
   );
 }
 
