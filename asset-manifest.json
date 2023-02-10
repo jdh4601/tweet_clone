@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/tweet_clone/static/css/main.00d47dd7.css",
+    "main.js": "/tweet_clone/static/js/main.f1f04790.js",
+    "index.html": "/tweet_clone/index.html",
+    "main.00d47dd7.css.map": "/tweet_clone/static/css/main.00d47dd7.css.map",
+    "main.f1f04790.js.map": "/tweet_clone/static/js/main.f1f04790.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.00d47dd7.css",
+    "static/js/main.f1f04790.js"
+  ]
+}
