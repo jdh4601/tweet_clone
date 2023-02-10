@@ -13,7 +13,8 @@
 - Firebase
 
 ## Screenshot
-![image]()
+![image](https://github.com/jdh4601/tweet_clone/files/10707954/2023-02-10.10.39.59.jpeg)
 
 ## Feedback
 If you have any feedback, please reach out to my email, <jdh9490@gmail.com>
+
