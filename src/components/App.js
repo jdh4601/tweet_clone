@@ -9,7 +9,6 @@ function App() {
   const [init, setInit] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userObj, setUserObj] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // 로그인 상태 확인
@@ -37,7 +36,6 @@ function App() {
         setIsLoggedIn(false);
         setUserObj(null);
       }
-      setLoading(false);
       setInit(true);
     });
   }, []);
