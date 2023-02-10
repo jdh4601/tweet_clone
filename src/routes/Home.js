@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 
 import { db } from '../firebase';
-import Tweet from '../components/Tweet';
-import TweetForm from '../components/TweetForm';
+import Tweet from '../components/tweet/Tweet';
+import TweetForm from '../components/tweetForm/TweetForm';
 
 function Home({ userObj }) {
   const [tweets, setTweets] = useState([]);

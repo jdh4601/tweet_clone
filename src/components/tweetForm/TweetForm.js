@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { ref, uploadString, getDownloadURL } from 'firebase/storage';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { db, storage } from '../firebase';
+import { db, storage } from '../../firebase';
 import { v4 as uuidv4 } from 'uuid';
+import './TweetForm.css';
 
 function TweetForm({ userObj }) {
   const [tweet, setTweet] = useState('');
@@ -57,16 +58,29 @@ function TweetForm({ userObj }) {
   };
 
   return (
-    <form onSubmit={onSubmit}>
+    <form onSubmit={onSubmit} className="tweet-form">
+      <div className="tweet-container">
+        <input
+          className="enter-tweet"
+          type="text"
+          onChange={onChange}
+          value={tweet}
+          placeholder="Enter a text"
+          maxLength={50}
+        />
+        <input
+          className="submit-tweet"
+          type="submit"
+          value="send"
+          onSubmit={onSubmit}
+        />
+      </div>
       <input
-        type="text"
-        onChange={onChange}
-        value={tweet}
-        placeholder="Enter a text"
-        maxLength={50}
+        className="file-btn"
+        type="file"
+        accept="image/*"
+        onChange={onFileChange}
       />
-      <input type="submit" value="Tweet" onSubmit={onSubmit} />
-      <input type="file" accept="image/*" onChange={onFileChange} />
       {attachedFile && (
         <div>
           <img width="70px" height="150px" src={attachedFile} />
