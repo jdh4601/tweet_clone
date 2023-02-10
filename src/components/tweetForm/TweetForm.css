@@ -1,0 +1,35 @@
+.tweet-container {
+  display: flex;
+  align-items: center;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  justify-content: space-between;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.enter-tweet {
+  margin-left: 3rem;
+  padding: 20px;
+  width: 80%;
+  height: 40px;
+  border-radius: 10px;
+  margin-right: 10px;
+}
+
+.submit-tweet {
+  margin-right: 3rem;
+  width: 70px;
+  height: 40px;
+  border-radius: 10px;
+  border-style: none;
+  background-color: blue;
+  color: white;
+  font-size: 1.3rem;
+}
+
+.file-btn {
+  margin-left: 3rem;
+  margin-bottom: 3rem;
+}
+

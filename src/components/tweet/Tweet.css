@@ -1,0 +1,41 @@
+.tweet-list-container img {
+  margin-left: 3rem;
+  margin-bottom: 10px;
+  width: 40%;
+  height: 40%;
+  margin-bottom: 10px;
+}
+
+.input-tweet {
+  width: 100px;
+  height: 30px;
+  border-style: none;
+  border-radius: 5px;
+}
+
+.tweet-list {
+  margin-left: 3rem;
+  margin-right: 3rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: 35px;
+  margin-bottom: 12px;
+}
+
+.tweet-text {
+  font-size: 20px;
+}
+
+.btn-container {
+  display: flex;
+  width: 130px;
+  justify-content: space-between;
+}
+
+.btn-container button {
+  width: 60px;
+  height: 35px;
+  border-style: none;
+}
